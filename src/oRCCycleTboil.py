@@ -475,8 +475,8 @@ class ORCCycleTboil(object):
         results.q_boiler = mdot_ratio * q_boiler_orc
         results.q_desuperheater = mdot_ratio * q_desuperheater_orc
         results.q_condenser = mdot_ratio * q_condenser_orc
-        results.q_superheater_orc = mdot_ratio * q_superheater_orc
-        results.q_recuperator_orc = mdot_ratio * q_recuperator_orc
+        results.q_superheater = mdot_ratio * q_superheater_orc
+        results.q_recuperator = mdot_ratio * q_recuperator_orc
         results.w_turbine = mdot_ratio * w_turbine_orc
         results.w_pump = mdot_ratio * w_pump_orc
         results.w_cooler = mdot_ratio * w_cooler_orc

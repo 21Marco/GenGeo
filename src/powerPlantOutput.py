@@ -22,6 +22,7 @@ class PowerPlantEnergyOutput(object):
     q_preheater = np.nan
     q_recuperator = np.nan
     q_boiler = np.nan
+    q_superheater = np.nan
     q_desuperheater = np.nan
     q_condenser = np.nan
     w_turbine = np.nan

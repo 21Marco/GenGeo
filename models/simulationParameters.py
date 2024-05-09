@@ -41,10 +41,15 @@ class SimulationParameters(object):
                 N_5spot = 1, #Square-root of numbe of 5spots which share a central plant in a Many_N configuration. e.g. N=2 is 4 5spots.
                 has_surface_gathering_system = True,
                 # power plant model
+                orc_Saturated_noSH = False,
+                orc_Rec = False,
                 max_pump_dP = 10.e6,
                 eta_pump = 0.75,
-                dT_approach = 7.,
-                dT_pinch = 5.,
+                dp_dT_loss = [0, 0.02, 0.01, 1, 0.02, 0, 0.02, 0.01, 0.5], #(pump, rec_cold, eco, eva, sh, turb, rec_hot, desh, cond) dp and dT for different components
+                dT_approach=7.,  # Approach al condenser
+                dT_pinch=5.,  # Pinch al condenser
+                dT_ap_phe=10,  # Approach al PHE
+                dT_pp_rec=5,  # Approach al recuperator
                 eta_pump_orc = 0.9,
                 eta_turbine_orc = 0.8,
                 eta_pump_co2 = 0.9,
@@ -88,9 +93,13 @@ class SimulationParameters(object):
         self.N_5spot = N_5spot
         self.has_surface_gathering_system = has_surface_gathering_system
         self.max_pump_dP = max_pump_dP
+        self.orc_Saturated_noSH = orc_Saturated_noSH
+        self.orc_Rec = orc_Rec
         self.eta_pump = eta_pump
         self.dT_approach = dT_approach
         self.dT_pinch = dT_pinch
+        self.dT_ap_phe = dT_ap_phe
+        self.dT_pp_rec = dT_pp_rec
         self.eta_pump_orc = eta_pump_orc
         self.eta_turbine_orc = eta_turbine_orc
         self.eta_pump_co2 = eta_pump_co2

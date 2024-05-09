@@ -80,8 +80,8 @@ class ORCCycleTboil(object):
 
         T_condense_C = self.params.T_ambient_C + self.params.dT_approach
 
-        if self.params.orc_Saturo_SH:   #ciclo orc Saturo, senza SH
-            if self.params.orc_rec:  #senza Recuperatore
+        if self.params.orc_Saturated_SH:   #Saturated ORC Cycle, without SH
+            if self.params.orc_Rec:  #without Recuperator
                 state = [None] * 6
 
                 # State 1 (Condenser -> Pump)
@@ -93,10 +93,10 @@ class ORCCycleTboil(object):
                 # saturated vapor
                 state[3] = FluidState.getStateFromTQ(self.params.T_boil_C, 1, self.params.orc_fluid)
 
-                # Calcolo i vari dp per tutti i punti TDN; se positivo è relativo, se negativo è assoluto
+                # Compute dp and dT for each TDN points; relative if > 0, absolute if < 0
                 # Condenser
                 if self.params.dp_dT_loss[8] > 0:
-                    p_6 = state[0].P_Pa / (1 - self.params.dp_dT_loss[8])  # dp per il condensatore
+                    p_6 = state[0].P_Pa / (1 - self.params.dp_dT_loss[8])  # dp for the condenser
                 else:
                     T_6 = state[0].T_C + self.params.dp_dT_loss[8]
                     p_6 = FluidState.getStateFromTQ(T_6, 1, self.params.orc_fluid).P_Pa
@@ -104,24 +104,24 @@ class ORCCycleTboil(object):
 
                 # Desuperheater
                 if self.params.dp_dT_loss[7] > 0:
-                    p_5 = p_6 / (1 - self.params.dp_dT_loss[7])  # dp per il desuperheater
+                    p_5 = p_6 / (1 - self.params.dp_dT_loss[7])  # dp for the desuperheater
                 else:
                     p_5 = self.params.dp_dT_loss[7] + p_6
 
                 # Evaporator
                 if self.params.dp_dT_loss[3] > 0:
-                    p_3 = state[3].P_Pa / (1 - self.params.dp_dT_loss[3])  # dp per la caldaia
+                    p_3 = state[3].P_Pa / (1 - self.params.dp_dT_loss[3])  # dp for the boiler
                 else:
                     T_3 = state[3].T_C + self.params.dp_dT_loss[3]  # - dT_sc
                     p_3 = FluidState.getStateFromTQ(T_3, 0, self.params.orc_fluid).P_Pa
 
                 # Economizer
                 if self.params.dp_dT_loss[2] > 0:
-                    p_2 = p_3 / (1 - self.params.dp_dT_loss[2])  # dp per il pre-riscaldatore
+                    p_2 = p_3 / (1 - self.params.dp_dT_loss[2])  # dp for the pre-heater
                 else:
                     p_2 = self.params.dp_dT_loss[2] + p_3
 
-                # Calcolo i punti TDN
+                # Compute the TDN points
                 # State 6 (Desuperheater -> Condenser)
                 # saturated vapor
                 state[5] = FluidState.getStateFromPQ(p_6, 1, self.params.orc_fluid)
@@ -157,7 +157,7 @@ class ORCCycleTboil(object):
                 results.dP_pump_orc = state[1].P_Pa - state[0].P_Pa
                 results.P_boil = state[2].P_Pa
 
-            else:  #con il Recuperatore
+            else:  #with the Recuperator
 
                 # create empty list to compute cycle of 6 states
                 state = [None] * 8
@@ -171,46 +171,46 @@ class ORCCycleTboil(object):
                 # saturated vapor
                 state[4] = FluidState.getStateFromTQ(self.params.T_boil_C, 1, self.params.orc_fluid)
 
-                # Calcolo i vari dp per tutti i punti TDN
+                # Compute dp and dT for each TDN points; relative if > 0, absolute if < 0
                 # Condenser
                 if self.params.dp_dT_loss[8] > 0:
-                    p_8 = state[0].P_Pa / (1 - self.params.dp_dT_loss[8])  # dp per il condensatore
+                    p_8 = state[0].P_Pa / (1 - self.params.dp_dT_loss[8])  # dp for the condenser
                 else:
                     T_8 = state[0].T_C + self.params.dp_dT_loss[8]
                     p_8 = FluidState.getStateFromTQ(T_8, 1, self.params.orc_fluid).P_Pa
 
                 # Desuperheater
                 if self.params.dp_dT_loss[7] > 0:
-                    p_7 = p_8 / (1 - self.params.dp_dT_loss[7])  # dp per il desuperheater
+                    p_7 = p_8 / (1 - self.params.dp_dT_loss[7])  # dp for the desuperheater
                 else:
                     p_7 = self.params.dp_dT_loss[7] + p_8
 
                 # Boiler
                 if self.params.dp_dT_loss[3] > 0:
-                    p_4 = state[4].P_Pa / (1 - self.params.dp_dT_loss[3])  # dp per la caldaia
+                    p_4 = state[4].P_Pa / (1 - self.params.dp_dT_loss[3])  # dp for the boiler
                 else:
                     T_4 = state[4].T_C + self.params.dp_dT_loss[3]  # - dT_sc
                     p_4 = FluidState.getStateFromTQ(T_4, 0, self.params.orc_fluid).P_Pa
 
                 # Preheater
                 if self.params.dp_dT_loss[2] > 0:
-                    p_3 = p_4 / (1 - self.params.dp_dT_loss[2])  # dp per il pre-riscaldatore
+                    p_3 = p_4 / (1 - self.params.dp_dT_loss[2])  # dp for the pre-heater
                 else:
                     p_3 = self.params.dp_dT_loss[2] + p_4
 
                 # Recuperator hot side
                 if self.params.dp_dT_loss[6] > 0:
-                    p_6 = p_7 / (1 - self.params.dp_dT_loss[6])  # dp per il recuperatore lato caldo
+                    p_6 = p_7 / (1 - self.params.dp_dT_loss[6])  # dp for the recuperator hot side
                 else:
                     p_6 = self.params.dp_dT_loss[6] + p_7
 
                 # Recuperator cold side
                 if self.params.dp_dT_loss[1] > 0:
-                    p_2 = p_3 * (1 - self.params.dp_dT_loss[1])  # dp per il recuperatore lato freddo
+                    p_2 = p_3 * (1 - self.params.dp_dT_loss[1])  # dp for the recuperator cold side
                 else:
                     p_2 = p_3 - self.params.dp_dT_loss[1]
 
-                # Calcolo i punti TDN
+                # compute the TDN points
                 # State 8 (Desuperheater -> Condenser)
                 # saturated vapor
                 state[7] = FluidState.getStateFromPQ(p_8, 1, self.params.orc_fluid)
@@ -251,8 +251,8 @@ class ORCCycleTboil(object):
                 results.dP_pump_orc = state[1].P_Pa - state[0].P_Pa
                 results.P_boil = state[3].P_Pa
 
-        else:  # ciclo orc con SH
-            if self.params.orc_rec:  #ciclo orc SH senza rec
+        else:  # ORC Cycle with SH
+            if self.params.orc_Rec:  #without Recuperator
 
                 # create empty list to compute cycle of 6 states
                 state = [None] * 7
@@ -266,10 +266,10 @@ class ORCCycleTboil(object):
                 # saturated vapor
                 state[3] = FluidState.getStateFromTQ(self.params.T_boil_C, 1, self.params.orc_fluid)
 
-                # Calcolo i vari dp per tutti i punti TDN
+                # Compute dp and dT for each TDN points; relative if > 0, absolute if < 0
                 # Condenser
                 if self.params.dp_dT_loss[8] > 0:
-                    p_7 = state[0].P_Pa / (1 - self.params.dp_dT_loss[8])  # dp per il condensatore
+                    p_7 = state[0].P_Pa / (1 - self.params.dp_dT_loss[8])  # dp for the condenser
                 else:
                     T_7 = state[0].T_C + self.params.dp_dT_loss[8]
                     p_7 = FluidState.getStateFromTQ(T_7, 1, self.params.orc_fluid).P_Pa
@@ -277,30 +277,30 @@ class ORCCycleTboil(object):
 
                 # Desuperheater
                 if self.params.dp_dT_loss[7] > 0:
-                    p_6 = p_7 / (1 - self.params.dp_dT_loss[7])  # dp per il desuperheater
+                    p_6 = p_7 / (1 - self.params.dp_dT_loss[7])  # dp for the desuperheater
                 else:
                     p_6 = self.params.dp_dT_loss[7] + p_7
 
                 # Superheater
                 if self.params.dp_dT_loss[4] > 0:
-                    p_5 = state[3].P_Pa * (1 - self.params.dp_dT_loss[4])  # dp per il superheater
+                    p_5 = state[3].P_Pa * (1 - self.params.dp_dT_loss[4])  # dp for the superheater
                 else:
                     p_5 = state[3].P_Pa - self.params.dp_dT_loss[4]
 
                 # Evaporator
                 if self.params.dp_dT_loss[3] > 0:
-                    p_3 = state[3].P_Pa / (1 - self.params.dp_dT_loss[3])  # dp per la caldaia
+                    p_3 = state[3].P_Pa / (1 - self.params.dp_dT_loss[3])  # dp for the boiler
                 else:
                     T_3 = state[3].T_C + self.params.dp_dT_loss[4]  # - dT_sc
                     p_3 = FluidState.getStateFromTQ(T_3, 0, self.params.orc_fluid).P_Pa
 
                 # Economizer
                 if self.params.dp_dT_loss[2] > 0:
-                    p_2 = p_3 / (1 - self.params.dp_dT_loss[2])  # dp per il pre-riscaldatore
+                    p_2 = p_3 / (1 - self.params.dp_dT_loss[2])  # dp for the pre-heater
                 else:
                     p_2 = self.params.dp_dT_loss[2] + p_3
 
-                # Calcolo i punti TDN
+                # Compute TDN points
                 # State 7 (Desuperheater -> Condenser)
                 # saturated vapor
                 state[6] = FluidState.getStateFromPQ(p_7, 1, self.params.orc_fluid)
@@ -351,10 +351,10 @@ class ORCCycleTboil(object):
                 # saturated vapor
                 state[4] = FluidState.getStateFromTQ(self.params.T_boil_C, 1, self.params.orc_fluid)
 
-                # Calcolo i vari dp per tutti i punti TDN
+                # Compute dp and dT for each TDN points; relative if > 0, absolute if < 0
                 # Condenser
                 if self.params.dp_dT_loss[8] > 0:
-                    p_9 = state[0].P_Pa / (1 - self.params.dp_dT_loss[8])  # dp per il condensatore
+                    p_9 = state[0].P_Pa / (1 - self.params.dp_dT_loss[8])  # dp for the condenser
                 else:
                     T_9 = state[0].T_C + self.params.dp_dT_loss[8]
                     p_9 = FluidState.getStateFromTQ(T_9, 1, self.params.orc_fluid).P_Pa
@@ -362,42 +362,42 @@ class ORCCycleTboil(object):
 
                 # Desuperheater
                 if self.params.dp_dT_loss[7] > 0:
-                    p_8 = p_9 / (1 - self.params.dp_dT_loss[7])  # dp per il desuperheater
+                    p_8 = p_9 / (1 - self.params.dp_dT_loss[7])  # dp for the desuperheater
                 else:
                     p_8 = self.params.dp_dT_loss[7] + p_9
 
                 # Evaporator
                 if self.params.dp_dT_loss[3] > 0:
-                    p_4 = state[4].P_Pa / (1 - self.params.dp_dT_loss[3])  # dp per la caldaia
+                    p_4 = state[4].P_Pa / (1 - self.params.dp_dT_loss[3])  # dp for the boiler
                 else:
                     T_4 = state[4].T_C + self.params.dp_dT_loss[3]  # - dT_sc
                     p_4 = FluidState.getStateFromTQ(T_4, 0, self.params.orc_fluid).P_Pa
 
                 # Preheater/Economizer
                 if self.params.dp_dT_loss[2] > 0:
-                    p_3 = p_4 / (1 - self.params.dp_dT_loss[2])  # dp per il pre-riscaldatore
+                    p_3 = p_4 / (1 - self.params.dp_dT_loss[2])  # dp for the pre-heater
                 else:
                     p_3 = self.params.dp_dT_loss[2] + p_4
 
                 # Superheater
                 if self.params.dp_dT_loss[4] > 0:
-                    p_6 = state[4].P_Pa * (1 - self.params.dp_dT_loss[4])  # dp per il superheater
+                    p_6 = state[4].P_Pa * (1 - self.params.dp_dT_loss[4])  # dp for the superheater
                 else:
                     p_6 = state[4].P_Pa - self.params.dp_dT_loss[4]
 
                 # Recuperator hot side
                 if self.params.dp_dT_loss[6] > 0:
-                    p_7 = p_8 / (1 - self.params.dp_dT_loss[6])  # dp per il recuperatore lato caldo
+                    p_7 = p_8 / (1 - self.params.dp_dT_loss[6])  # dp for the hot side recuperator
                 else:
                     p_7 = self.params.dp_dT_loss[6] + p_8
 
                 # Recuperator cold side
                 if self.params.dp_dT_loss[1] > 0:
-                    p_2 = p_3 * (1 - self.params.dp_dT_loss[1])  # dp per il recuperatore lato freddo
+                    p_2 = p_3 * (1 - self.params.dp_dT_loss[1])  # dp for the cold side recuperator
                 else:
                     p_2 = p_3 - self.params.dp_dT_loss[1]
 
-                # Calcolo i punti TDN
+                # Compute TDN points
                 # State 9 (Desuperheater -> Condenser)
                 # saturated vapor
                 state[8] = FluidState.getStateFromPQ(p_9, 1, self.params.orc_fluid)

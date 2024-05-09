@@ -46,10 +46,10 @@ class SimulationParameters(object):
                 max_pump_dP = 10.e6,
                 eta_pump = 0.75,
                 dp_dT_loss = [0, 0.02, 0.01, 1, 0.02, 0, 0.02, 0.01, 0.5], #(pump, rec_cold, eco, eva, sh, turb, rec_hot, desh, cond) dp and dT for different components
-                dT_approach=7.,  # Approach al condenser
-                dT_pinch=5.,  # Pinch al condenser
-                dT_ap_phe=10,  # Approach al PHE
-                dT_pp_rec=5,  # Approach al recuperator
+                dT_approach = 7.,  # Approach al condenser
+                dT_pinch = 5.,  # Pinch al condenser
+                dT_ap_phe = 10,  # Approach al PHE
+                dT_pp_rec = 5,  # Approach al recuperator
                 eta_pump_orc = 0.9,
                 eta_turbine_orc = 0.8,
                 eta_pump_co2 = 0.9,
@@ -95,6 +95,7 @@ class SimulationParameters(object):
         self.max_pump_dP = max_pump_dP
         self.orc_Saturated_noSH = orc_Saturated_noSH
         self.orc_Rec = orc_Rec
+        self.dp_dT_loss = dp_dT_loss
         self.eta_pump = eta_pump
         self.dT_approach = dT_approach
         self.dT_pinch = dT_pinch

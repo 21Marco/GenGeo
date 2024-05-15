@@ -31,7 +31,7 @@ class ORCCycleTboil(object):
     actual power, multiply by the flowrate of geofluid through the system.
     """
 
-    def __init__(self, params=None, **kwargs):
+    def __init__(self, params = None, **kwargs):
         self.params = params
         if self.params == None:
             self.params = SimulationParameters(**kwargs)
@@ -39,7 +39,7 @@ class ORCCycleTboil(object):
         self.orc_fluid = self.params.orc_fluid
         self.T_boil_max = maxSubcritORCBoilTemp(self.orc_fluid)
 
-    def solve(self, initialState, T_boil_C=False, dT_pinch=False):
+    def solve(self, initialState, T_boil_C = False, dT_pinch = False):
 
         T_in_C = initialState.T_C
 
@@ -80,7 +80,7 @@ class ORCCycleTboil(object):
 
         T_condense_C = self.params.T_ambient_C + self.params.dT_approach
 
-        if self.params.orc_Saturated_SH:   #Saturated ORC Cycle, without SH
+        if self.params.orc_Saturated_noSH:   #Saturated ORC Cycle, without SH
             if self.params.orc_Rec:  #without Recuperator
                 state = [None] * 6
 
@@ -91,7 +91,7 @@ class ORCCycleTboil(object):
 
                 # State 4 (Boiler -> Turbine)
                 # saturated vapor
-                state[3] = FluidState.getStateFromTQ(self.params.T_boil_C, 1, self.params.orc_fluid)
+                state[3] = FluidState.getStateFromTQ(T_boil_C, 1, self.params.orc_fluid)
 
                 # Compute dp and dT for each TDN points; relative if > 0, absolute if < 0
                 # Condenser
@@ -169,7 +169,7 @@ class ORCCycleTboil(object):
 
                 # State 5 (Boiler -> Turbine)
                 # saturated vapor
-                state[4] = FluidState.getStateFromTQ(self.params.T_boil_C, 1, self.params.orc_fluid)
+                state[4] = FluidState.getStateFromTQ(T_boil_C, 1, self.params.orc_fluid)
 
                 # Compute dp and dT for each TDN points; relative if > 0, absolute if < 0
                 # Condenser
@@ -264,7 +264,7 @@ class ORCCycleTboil(object):
 
                 # State 4 (Boiler -> Superheater)
                 # saturated vapor
-                state[3] = FluidState.getStateFromTQ(self.params.T_boil_C, 1, self.params.orc_fluid)
+                state[3] = FluidState.getStateFromTQ(T_boil_C, 1, self.params.orc_fluid)
 
                 # Compute dp and dT for each TDN points; relative if > 0, absolute if < 0
                 # Condenser
@@ -349,7 +349,7 @@ class ORCCycleTboil(object):
 
                 # State 5 (Boiler -> Superheater)
                 # saturated vapor
-                state[4] = FluidState.getStateFromTQ(self.params.T_boil_C, 1, self.params.orc_fluid)
+                state[4] = FluidState.getStateFromTQ(T_boil_C, 1, self.params.orc_fluid)
 
                 # Compute dp and dT for each TDN points; relative if > 0, absolute if < 0
                 # Condenser

@@ -45,7 +45,7 @@ class SimulationParameters(object):
                 orc_Rec = False,
                 max_pump_dP = 10.e6,
                 eta_pump = 0.75,
-                dp_dT_loss = [0, 0.0, 0.0, 0, 0.0, 0, 0.0, 0.0, 0.], #[0, 0.02, 0.01, 1.1, 0.02, 0, 0.02, 0.01, 0.5](pump, rec_cold, eco, eva, sh, turb, rec_hot, desh, cond) dp and dT for different components
+                dp_dT_loss = [0, 0.02, 0.01, 1.1, 0.02, 0, 0.02, 0.01, 0.5], #(pump, rec_cold, eco, eva, sh, turb, rec_hot, desh, cond) dp and dT for different components
                 dT_approach = 7.,  # Approach al condenser
                 dT_pinch = 5.,  # Pinch al condenser
                 dT_ap_phe = 10,  # Approach al PHE

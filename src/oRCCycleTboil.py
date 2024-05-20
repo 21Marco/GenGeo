@@ -80,7 +80,7 @@ class ORCCycleTboil(object):
 
         T_condense_C = self.params.T_ambient_C + self.params.dT_approach
 
-        if self.params.orc_Saturated_noSH:   #Saturated ORC Cycle, without SH
+        if self.params.orc_Saturated:   #Saturated ORC Cycle, without SH
             if self.params.orc_Rec:  #without Recuperator
                 state = [None] * 6
 
